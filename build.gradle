@@ -12,8 +12,9 @@ repositories {
 dependencies {
     testImplementation platform('org.junit:junit-bom:5.10.0')
     testImplementation 'org.junit.jupiter:junit-jupiter'
-   // implementation("com.codeborne:selenide:7.9.2")
+   implementation("com.codeborne:selenide:7.9.2")
     testImplementation("io.rest-assured:rest-assured:5.5.2")
+    testImplementation 'com.fasterxml.jackson.core:jackson-databind:2.15.2'
 }
 
 test {
