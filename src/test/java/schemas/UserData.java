@@ -1,4 +1,4 @@
-package api;
+package schemas;
 
 public record UserData(
          Integer id,
