@@ -1,16 +1,23 @@
 package tests;
 
-import api.Asshurd;
+import api.ApiRequests;
+import io.restassured.response.Response;
 import org.junit.jupiter.api.Test;
-import schemas.PageResource;
-import schemas.Register;
-import schemas.User;
+import schemas.*;
 
-public class ReqresInTests extends Asshurd {
+public class ReqresInTests extends ApiRequests {
+
+    @Test
+    public void getAllUsersTest() {
+       // getAllUsers().body().as(UserData.class).email();
+
+    }
 
     @Test
     public void getSingleUserTest() {
-        getSingleUsers().getBody().prettyPrint();
+
+       Response response = getSingleUsers();
+       // System.out.println(response.body().as(ListResource.class).id());
 
     }
 
@@ -22,9 +29,10 @@ public class ReqresInTests extends Asshurd {
 
     @Test
     public void getListResourcesTest() {
-        getListResource();
-        PageResource list = getListResource().as(PageResource.class);
-        System.out.println(list.data().getFirst().name());
+
+        //PageResource list = getListResource().as(PageResource.class);
+
+
     }
 
     @Test
@@ -73,11 +81,11 @@ public class ReqresInTests extends Asshurd {
         loginUser(register).getBody().prettyPrint();
     }
 
-    //TODO сдлеать второй конструктор в классе и перегрузить его
     @Test
     public void loginUnSuccessfulUserTest() {
-        Register register = new Register("eve.holt@reqres.in", "cityslicka");
-        loginUser(register);
+        Register register = new Register("eve.holt@reqres.in");
+        loginUser(register).getBody().prettyPrint();
+        System.out.println(loginUser(register).getStatusCode());
     }
 
     @Test
