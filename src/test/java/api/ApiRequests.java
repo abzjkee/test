@@ -1,137 +1,127 @@
 package api;
 
-import io.restassured.http.ContentType;
 import io.restassured.response.Response;
+import specs.Specs;
 
 import static io.restassured.RestAssured.given;
 
+
 public class ApiRequests {
-
-    private final static String URL = "https://reqres.in";
-    public static final String HEADER = "x-api-key";
-    public static final String VALUE = "reqres-free-v1";
-
 
     public Response getAllUsers() {
         return given()
+                .spec(Specs.baseSpec())
                 .when()
-                .header(HEADER, VALUE)
-                .get(URL + "/api/users?page=2")
+                .get("/api/users?page=2")
                 .then()
                 .extract().response();
     }
 
     public Response getSingleUsers() {
         return given()
+                .spec(Specs.baseSpec())
                 .when()
-                .header(HEADER, VALUE)
-                .get(URL + "/api/users/2")
+                .get("/api/users/2")
                 .then()
                 .extract().response();
     }
 
     public Response getSingleUsersNotFound() {
         return given()
+                .spec(Specs.baseSpec())
                 .when()
-                .header(HEADER, VALUE)
-                .get(URL + "/api/unknown/23");
+                .get("/api/unknown/23");
     }
 
     public Response getListResource() {
         return given()
+                .spec(Specs.baseSpec())
                 .when()
-                .header(HEADER, VALUE)
-                .get(URL + "/api/unknown")
+                .get("/api/unknown")
                 .then()
                 .extract().response();
     }
 
     public Response getSingleResource() {
         return given()
+                .spec(Specs.baseSpec())
                 .when()
-                .header(HEADER, VALUE)
-                .get(URL + "/api/unknown/2")
+                .get("/api/unknown/2")
                 .then()
                 .extract().response();
     }
 
     public Response getSingleResourceNotFound() {
         return given()
+                .spec(Specs.baseSpec())
                 .when()
-                .header(HEADER, VALUE)
-                .get(URL + "/api/unknown/23");
+                .get("/api/unknown/23");
     }
 
     public Response createUser(Object user) {
         return given()
-                .contentType(ContentType.JSON)
+                .spec(Specs.baseSpec())
                 .body(user)
-                .header(HEADER, VALUE)
                 .when()
-                .post(URL + "/api/users")
+                .post("/api/users")
                 .then().extract().response();
     }
 
     public Response registerUser(Object register) {
         return given()
-                .contentType(ContentType.JSON)
+                .spec(Specs.baseSpec())
                 .body(register)
-                .header(HEADER, VALUE)
                 .when()
-                .post(URL + "/api/users")
+                .post("/api/users")
                 .then()
                 .extract().response();
     }
 
     public Response upDateUser(Object user) {
         return given()
-                .contentType(ContentType.JSON)
+                .spec(Specs.baseSpec())
                 .body(user)
-                .header(HEADER, VALUE)
                 .when()
-                .put(URL + "/api/users/2")
+                .put("/api/users/2")
                 .then()
                 .extract().response();
     }
 
     public Response uPDateUserPatch(Object user) {
         return given()
-                .contentType(ContentType.JSON)
+                .spec(Specs.baseSpec())
                 .body(user)
-                .header(HEADER, VALUE)
                 .when()
-                .patch(URL + "/api/users/2")
+                .patch("/api/users/2")
                 .then()
                 .extract().response();
     }
 
     public Response deleteUser() {
         return given()
-                .contentType(ContentType.JSON)
-                .header(HEADER, VALUE)
+                .spec(Specs.baseSpec())
                 .when()
-                .delete(URL + "/api/users/2")
+                .delete("/api/users/2")
                 .then()
                 .extract().response();
     }
 
     public Response loginUser(Object register) {
         return given()
-                .contentType(ContentType.JSON)
+                .spec(Specs.baseSpec())
                 .body(register)
-                .header(HEADER, VALUE)
                 .when()
-                .post(URL + "/api/login")
+                .post("/api/login")
                 .then()
                 .extract().response();
     }
 
     public Response getDelayedResponse() {
         return given()
+                .spec(Specs.baseSpec())
                 .when()
-                .header(HEADER, VALUE)
                 .queryParam("delay", 3)
-                .get(URL + "/api/users")
+                .get("/api/users")
                 .then()
                 .extract().response();
     }

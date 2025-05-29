@@ -1,4 +1,4 @@
-package schemas;
+package pojo;
 
 public record UserData(
          Integer id,

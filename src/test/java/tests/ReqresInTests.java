@@ -1,30 +1,61 @@
 package tests;
 
 import api.ApiRequests;
+import io.qameta.allure.Allure;
+import io.restassured.RestAssured;
 import io.restassured.response.Response;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import schemas.*;
+import pojo.*;
+
+import static helpers.CustomAllureListener.withCustomTemplates;
+import static io.restassured.module.jsv.JsonSchemaValidator.matchesJsonSchemaInClasspath;
 
 public class ReqresInTests extends ApiRequests {
 
+    @BeforeAll
+    static void setup() {
+        RestAssured.filters(withCustomTemplates()); // Включает логирование запросов/ответов в Allure
+    }
+
     @Test
     public void getAllUsersTest() {
-       // getAllUsers().body().as(UserData.class).email();
-
+        Response response = Allure.step("Отправка запроса для получения всех пользователей", this::getAllUsers);
+        Allure.step("Проверка ответа на соответствие JSON Schema", () -> {
+            response
+                    .then()
+                    .assertThat()
+                    .body(matchesJsonSchemaInClasspath("schemes/all-users-schema.json"));
+        });
+        Allure.step("Проверка статус-кода", () -> {
+            Assertions.assertEquals(200, response.getStatusCode(),
+                    "Статус-код не соответствует ожидаемому");
+        });
     }
 
     @Test
     public void getSingleUserTest() {
-
-       Response response = getSingleUsers();
-       // System.out.println(response.body().as(ListResource.class).id());
-
+        Response response = Allure.step("Отправка запроса для получения пользователя", this::getSingleUsers);
+        Allure.step("Проверка ответа на соответствие JSON Schema", () -> {
+            response
+                    .then()
+                    .assertThat()
+                    .body(matchesJsonSchemaInClasspath("schemes/single-user-schema.json"));
+        });
+        Allure.step("Проверка статус-кода", () -> {
+            Assertions.assertEquals(200, response.getStatusCode(),
+                    "Статус-код не соответствует ожидаемому");
+        });
     }
 
     @Test
     public void getSingleUserNotFoundTest() {
-        System.out.println(getSingleUsersNotFound().getStatusCode());
-
+        Response response = Allure.step("Отправка запроса для получения пользователя", this::getSingleUsersNotFound);
+        Allure.step("Проверка статус-кода", () -> {
+            Assertions.assertEquals(404, response.getStatusCode(),
+                    "Статус-код не соответствует ожидаемому");
+        });
     }
 
     @Test

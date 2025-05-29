@@ -1,4 +1,4 @@
-package schemas;
+package pojo;
 
 public class Register {
 
