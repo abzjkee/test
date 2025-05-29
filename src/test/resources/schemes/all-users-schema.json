@@ -26,8 +26,10 @@
           "first_name": { "type": "string" },
           "last_name": { "type": "string" },
           "avatar": { "type": "string", "format": "uri" }
-        }
+        },
+        "additionalProperties": false
       }
     }
-  }
+  },
+  "additionalProperties": false
 }

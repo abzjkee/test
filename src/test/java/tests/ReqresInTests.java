@@ -60,15 +60,32 @@ public class ReqresInTests extends ApiRequests {
 
     @Test
     public void getListResourcesTest() {
-
-        //PageResource list = getListResource().as(PageResource.class);
-
-
+        Response response = Allure.step("Отправка запроса для получения ресурса", this::getListResource);
+        Allure.step("Проверка ответа на соответствие JSON Schema", () -> {
+            response
+                    .then()
+                    .assertThat()
+                    .body(matchesJsonSchemaInClasspath("schemes/all-list-resource.json"));
+        });
+        Allure.step("Проверка статус-кода", () -> {
+            Assertions.assertEquals(200, response.getStatusCode(),
+                    "Статус-код не соответствует ожидаемому");
+        });
     }
 
     @Test
     public void getSingleResourceTest() {
-        getSingleResource().getBody().prettyPrint();
+        Response response = Allure.step("Отправка запроса для получения ресурса", this::getSingleResource);
+        Allure.step("Проверка ответа на соответствие JSON Schema", () -> {
+            response
+                    .then()
+                    .assertThat()
+                    .body(matchesJsonSchemaInClasspath("schemes/single-list-resource.json"));
+        });
+        Allure.step("Проверка статус-кода", () -> {
+            Assertions.assertEquals(200, response.getStatusCode(),
+                    "Статус-код не соответствует ожидаемому");
+        });
     }
 
     @Test

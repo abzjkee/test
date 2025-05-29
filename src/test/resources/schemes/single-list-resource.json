@@ -9,25 +9,25 @@
         "id": {
           "type": "number"
         },
-        "email": {
+        "name": {
           "type": "string"
         },
-        "first_name": {
+        "year": {
+          "type": "number"
+        },
+        "color": {
           "type": "string"
         },
-        "last_name": {
-          "type": "string"
-        },
-        "avatar": {
+        "pantone_value": {
           "type": "string"
         }
       },
       "required": [
         "id",
-        "email",
-        "first_name",
-        "last_name",
-        "avatar"
+        "name",
+        "year",
+        "color",
+        "pantone_value"
       ],
       "additionalProperties": false
     },
