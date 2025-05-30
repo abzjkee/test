@@ -14,9 +14,11 @@ import static io.restassured.module.jsv.JsonSchemaValidator.matchesJsonSchemaInC
 
 public class ReqresInTests extends ApiRequests {
 
+    User user = new User("morpheus", "leader");
+
     @BeforeAll
     static void setup() {
-        RestAssured.filters(withCustomTemplates()); // Включает логирование запросов/ответов в Allure
+        RestAssured.filters(withCustomTemplates());
     }
 
     @Test
@@ -26,11 +28,8 @@ public class ReqresInTests extends ApiRequests {
             response
                     .then()
                     .assertThat()
-                    .body(matchesJsonSchemaInClasspath("schemes/all-users-schema.json"));
-        });
-        Allure.step("Проверка статус-кода", () -> {
-            Assertions.assertEquals(200, response.getStatusCode(),
-                    "Статус-код не соответствует ожидаемому");
+                    .body(matchesJsonSchemaInClasspath("schemes/all-users-schema.json"))
+                    .statusCode(200);
         });
     }
 
@@ -41,11 +40,8 @@ public class ReqresInTests extends ApiRequests {
             response
                     .then()
                     .assertThat()
-                    .body(matchesJsonSchemaInClasspath("schemes/single-user-schema.json"));
-        });
-        Allure.step("Проверка статус-кода", () -> {
-            Assertions.assertEquals(200, response.getStatusCode(),
-                    "Статус-код не соответствует ожидаемому");
+                    .body(matchesJsonSchemaInClasspath("schemes/single-user-schema.json"))
+                    .statusCode(200);
         });
     }
 
@@ -65,11 +61,8 @@ public class ReqresInTests extends ApiRequests {
             response
                     .then()
                     .assertThat()
-                    .body(matchesJsonSchemaInClasspath("schemes/all-list-resource.json"));
-        });
-        Allure.step("Проверка статус-кода", () -> {
-            Assertions.assertEquals(200, response.getStatusCode(),
-                    "Статус-код не соответствует ожидаемому");
+                    .body(matchesJsonSchemaInClasspath("schemes/all-list-resource.json"))
+                    .statusCode(200);
         });
     }
 
@@ -80,30 +73,53 @@ public class ReqresInTests extends ApiRequests {
             response
                     .then()
                     .assertThat()
-                    .body(matchesJsonSchemaInClasspath("schemes/single-list-resource.json"));
-        });
-        Allure.step("Проверка статус-кода", () -> {
-            Assertions.assertEquals(200, response.getStatusCode(),
-                    "Статус-код не соответствует ожидаемому");
+                    .body(matchesJsonSchemaInClasspath("schemes/single-list-resource.json"))
+                    .statusCode(200);
         });
     }
 
     @Test
     public void getSingleResourcesNotFoundTest() {
-        System.out.println(getSingleResourceNotFound().getStatusCode());
+        Response response = Allure.step("Отправка запроса для получения пользователя", this::getSingleResourceNotFound);
+        Allure.step("Проверка статус-кода", () -> {
+            Assertions.assertEquals(404, response.getStatusCode(),
+                    "Статус-код не соответствует ожидаемому");
+        });
     }
 
     @Test
     public void createUserTest() {
-        User user = new User("morpheus", "leader");
-        System.out.println(createUser(user).getStatusCode());
-
+        Response response = Allure.step("Отправка запроса для получения ресурса", () -> createUser(user));
+        Allure.step("Проверка ответа на соответствие JSON Schema", () -> {
+            response
+                    .then()
+                    .assertThat()
+                    .body(matchesJsonSchemaInClasspath("schemes/create-user.json"))
+                    .statusCode(201);
+        });
+        Allure.step("Проверка name и job созданного объекта", () -> {
+            Assertions.assertEquals("morpheus", response.as(CreateUser.class).name(),
+                    "Имя не соответствует созданному");
+        });
+        Assertions.assertEquals("leader", response.as(CreateUser.class).job(),
+                "Имя не соответствует созданному");
     }
 
     @Test
     public void registerUserTest() {
         Register register = new Register("eve.holt@reqres.in", "pistol");
-        registerUser(register).getBody().prettyPrint();
+        Response response = Allure.step("Отправка запроса для получения ресурса", () -> registerUser(register));
+        Allure.step("Проверка ответа на соответствие JSON Schema", () -> {
+            response
+                    .then()
+                    .assertThat()
+                    .body(matchesJsonSchemaInClasspath("schemes/register-user.json"))
+                    .statusCode(201);
+        });
+        Allure.step("Проверка name и job созданного объекта", () -> {
+            Assertions.assertEquals("eve.holt@reqres.in", response.as(ResponseRegisterBody.class).email());
+            Assertions.assertEquals("pistol", response.as(ResponseRegisterBody.class).password());
+        });
     }
 
     @Test
