@@ -1,11 +1,12 @@
 package tests;
 
 import api.ApiRequests;
-import io.qameta.allure.Allure;
+import io.qameta.allure.*;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import pojo.*;
 
@@ -15,6 +16,7 @@ import static io.restassured.module.jsv.JsonSchemaValidator.matchesJsonSchemaInC
 public class ReqresInTests extends ApiRequests {
 
     User user = new User("morpheus", "leader");
+    Register register = new Register("eve.holt@reqres.in", "pistol");
 
     @BeforeAll
     static void setup() {
@@ -100,14 +102,13 @@ public class ReqresInTests extends ApiRequests {
         Allure.step("Проверка name и job созданного объекта", () -> {
             Assertions.assertEquals("morpheus", response.as(CreateUser.class).name(),
                     "Имя не соответствует созданному");
+            Assertions.assertEquals("leader", response.as(CreateUser.class).job(),
+                    "Имя не соответствует созданному");
         });
-        Assertions.assertEquals("leader", response.as(CreateUser.class).job(),
-                "Имя не соответствует созданному");
     }
 
     @Test
     public void registerUserTest() {
-        Register register = new Register("eve.holt@reqres.in", "pistol");
         Response response = Allure.step("Отправка запроса для получения ресурса", () -> registerUser(register));
         Allure.step("Проверка ответа на соответствие JSON Schema", () -> {
             response
@@ -123,9 +124,13 @@ public class ReqresInTests extends ApiRequests {
     }
 
     @Test
+    @Feature("Тест")
+    @Story("Тест123")
+    @Severity(SeverityLevel.CRITICAL)
+    @DisplayName("Обновление пользователя")
     public void upDateUserPutTest() {
-        User user = new User("loh", "Rab");
-        upDateUser(user).getBody().prettyPrint();
+
+        upDateUser(user);
     }
 
     @Test
