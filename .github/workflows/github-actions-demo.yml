@@ -18,7 +18,7 @@ jobs:
           distribution: 'temurin'
 
       - name: Run API tests with @api tag
-        working-directory: ./src/tests/java/apitests
+        working-directory: ./src/test/java/apitests
         run: ./gradlew clean test --tests * --info -DincludeTags=api
         env:
           ALLURE_RESULTS_PATH: build/allure-results
@@ -45,7 +45,7 @@ jobs:
           distribution: 'temurin'
 
       - name: Run UI tests with @ui tag
-        working-directory: ./src/tests/java/uitests
+        working-directory: ./src/test/java/uitests
         run: ./gradlew clean test --tests * --info -DincludeTags=ui
         env:
           ALLURE_RESULTS_PATH: build/allure-results
