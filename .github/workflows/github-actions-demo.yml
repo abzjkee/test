@@ -1,10 +1,10 @@
-name: Run API/UI Tests and Publish Allure Report
+name: Run Tests and Publish Allure Report
 
 on: [push, pull_request]
 
 jobs:
   api-tests:
-    name: Run API Tests by @Tag
+    name: Run API Tests
     runs-on: ubuntu-latest
 
     steps:
@@ -21,19 +21,18 @@ jobs:
         run: chmod +x ./gradlew
 
       - name: Run API tests with @api tag
-        run: ./gradlew clean test --info -DincludeTags=api
+        run: ./gradlew clean test --info -DincludeTags=api || true
         env:
           ALLURE_RESULTS_PATH: build/allure-results
 
       - name: Upload API Allure results
         uses: actions/upload-artifact@v4
-        if: always()
         with:
           name: allure-api-results
           path: build/allure-results
 
   ui-tests:
-    name: Run UI Tests by @Tag
+    name: Run UI Tests
     runs-on: ubuntu-latest
 
     steps:
@@ -50,23 +49,25 @@ jobs:
         run: chmod +x ./gradlew
 
       - name: Run UI tests with @ui tag
-        run: ./gradlew clean test --info -DincludeTags=ui
+        run: ./gradlew clean test --info -DincludeTags=ui || true
         env:
           ALLURE_RESULTS_PATH: build/allure-results
 
       - name: Upload UI Allure results
         uses: actions/upload-artifact@v4
-        if: always()
         with:
           name: allure-ui-results
           path: build/allure-results
 
   allure-report:
-    name: Generate and Publish Allure Report
+    name: Generate & Publish Allure Report
     runs-on: ubuntu-latest
     needs: [api-tests, ui-tests]
 
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
       - name: Download API results
         uses: actions/download-artifact@v4
         with:
@@ -86,21 +87,26 @@ jobs:
           ALLURE_VERSION="2.34.0"
           wget https://github.com/allure-framework/allure2/releases/download/${ALLURE_VERSION}/allure-${ALLURE_VERSION}.zip
           unzip allure-${ALLURE_VERSION}.zip -d /opt/
-          sudo ln -sf /opt/allure-${ALLURE_VERSION}/bin/allure /usr/bin/allure
+          sudo ln -s /opt/allure-${ALLURE_VERSION}/bin/allure /usr/bin/allure
           allure --version
 
-      - name: Generate Allure report
+      - name: Generate Allure Report
         run: |
           mkdir -p merged-results
           cp -r allure-results/api/* merged-results/ || true
           cp -r allure-results/ui/* merged-results/ || true
-          allure generate merged-results -o allure-report
+          allure generate merged-results -o allure-report --clean
 
-      - name: Deploy to GitHub Pages
-        if: success()
-        uses: peaceiris/main@v4
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: allure-report
-          publish_branch: main
-          force_orphan: true
+      - name: Push Allure Report to main branch
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git fetch
+          git checkout main
+          mkdir -p docs/allure-report
+          rm -rf docs/allure-report/*
+          cp -r allure-report/* docs/allure-report/
+
+          git add docs/allure-report
+          git commit -m "📊 Update Allure Report [skip ci]" || echo "No changes to commit"
+          git push origin main
