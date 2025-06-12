@@ -43,6 +43,12 @@ dependencies {
 
 test {
     useJUnitPlatform()
+
+    if (System.properties['includeTags']) {
+        filter {
+            includeTags System.properties['includeTags'].split(',')
+        }
+    }
 }
 
 task cleanAllureResults(type: Delete) {
