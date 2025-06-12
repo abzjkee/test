@@ -8,25 +8,21 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # 1. Клонируем репозиторий
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # 2. Устанавливаем Java 17
       - name: Set up Java
         uses: actions/setup-java@v3
         with:
           java-version: '21'
           distribution: 'temurin'
 
-      # 3. Запускаем ТОЛЬКО API-тесты с тегом @api
       - name: Run API tests with @api tag
         working-directory: ./src/tests/java/apitests
         run: ./gradlew clean test --tests * --info -DincludeTags=api
         env:
           ALLURE_RESULTS_PATH: build/allure-results
 
-      # 4. Сохраняем результаты Allure
       - name: Upload API Allure results
         uses: actions/upload-artifact@v4
         if: always()
@@ -38,7 +34,6 @@ jobs:
     name: Run UI Tests by @Tag
     runs-on: ubuntu-latest
 
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -49,7 +44,6 @@ jobs:
           java-version: '21'
           distribution: 'temurin'
 
-      # Запускаем ТОЛЬКО UI-тесты с тегом @ui
       - name: Run UI tests with @ui tag
         working-directory: ./src/tests/java/uitests
         run: ./gradlew clean test --tests * --info -DincludeTags=ui
@@ -70,13 +64,13 @@ jobs:
 
     steps:
       - name: Download API results
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: allure-api-results
           path: allure-results/api
 
       - name: Download UI results
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: allure-ui-results
           path: allure-results/ui
@@ -86,13 +80,12 @@ jobs:
           sudo apt-get update
           sudo apt-get install allure
 
-      # Генерируем объединенный отчет
       - name: Generate Allure report
         run: |
           allure generate allure-results -o allure-report
 
       - name: Upload Allure report
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: allure-report
           path: allure-report
