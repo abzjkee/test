@@ -1,4 +1,4 @@
-package tests;
+package apitests;
 
 import api.ApiRequests;
 import io.qameta.allure.*;
