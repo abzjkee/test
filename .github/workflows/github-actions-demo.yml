@@ -1,12 +1,12 @@
-name: Run Tests and Publish Allure Report
+name: Tests
 
 on:
-  push:
-  pull_request:
+ push:
+ pull_request:
   workflow_dispatch:
     inputs:
       testType:
-        description: 'Which tests to run? (api, ui, all)'
+        description: 'Выбор сборки (api, ui, all)'
         required: true
         default: 'all'
 
@@ -16,7 +16,7 @@ permissions:
 jobs:
   api-tests:
     if: ${{ github.event_name != 'workflow_dispatch' || github.event.inputs.testType == 'api' || github.event.inputs.testType == 'all' }}
-    name: Run API Tests
+    name: API Tests
     runs-on: ubuntu-latest
 
     steps:
@@ -45,7 +45,7 @@ jobs:
 
   ui-tests:
     if: ${{ github.event_name != 'workflow_dispatch' || github.event.inputs.testType == 'ui' || github.event.inputs.testType == 'all' }}
-    name: Run UI Tests
+    name: UI Tests
     runs-on: ubuntu-latest
 
     steps:

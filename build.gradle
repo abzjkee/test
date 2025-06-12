@@ -10,17 +10,11 @@ allure {
     report {
         version.set("2.19.0")
     }
-
     adapter { // отвечает за появление папки allure-report
-
         aspectjWeaver.set(true) // обработка анотации @Step
-
-
         frameworks {
             junit5 {
-
                 adapterVersion.set("2.19.0") // версия интеграции алюра и junit
-
             }
         }
     }
