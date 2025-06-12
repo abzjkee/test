@@ -17,11 +17,14 @@ jobs:
           java-version: '21'
           distribution: 'temurin'
 
+      - name: Make gradlew executable
+        run: chmod +x ./gradlew
+
       - name: Run API tests with @api tag
-        working-directory: ./src/test/java/apitests
-        run: ./gradlew clean test -DincludeTags=api
+        run: ./gradlew clean test --tests * --info -DincludeTags=api
         env:
           ALLURE_RESULTS_PATH: build/allure-results
+
 
       - name: Upload API Allure results
         uses: actions/upload-artifact@v4
