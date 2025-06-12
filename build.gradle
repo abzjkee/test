@@ -45,6 +45,7 @@ test {
     useJUnitPlatform {
         includeTags System.getProperty("includeTags", "")
     }
+    finalizedBy 'allureReport'
 }
 
 task cleanAllureResults(type: Delete) {
