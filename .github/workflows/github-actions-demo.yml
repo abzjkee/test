@@ -2,6 +2,9 @@ name: Run Tests and Publish Allure Report
 
 on: [push, pull_request]
 
+permissions:
+  contents: write
+
 jobs:
   api-tests:
     name: Run API Tests
