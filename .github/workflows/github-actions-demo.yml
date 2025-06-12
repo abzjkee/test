@@ -25,13 +25,13 @@ jobs:
         env:
           ALLURE_RESULTS_PATH: build/allure-results
 
-
       - name: Upload API Allure results
         uses: actions/upload-artifact@v4
         if: always()
         with:
           name: allure-api-results
-          path: src/tests/java/apitests/build/allure-results
+          path: build/allure-results
+
 
   ui-tests:
     name: Run UI Tests by @Tag
@@ -51,8 +51,7 @@ jobs:
         run: chmod +x ./gradlew
 
       - name: Run UI tests with @ui tag
-        working-directory: ./src/test/java/uitests
-        run: ./gradlew clean test -DincludeTags=ui
+        run: ./gradlew clean test --info -DincludeTags=ui
         env:
           ALLURE_RESULTS_PATH: build/allure-results
 
@@ -62,6 +61,7 @@ jobs:
         with:
           name: allure-ui-results
           path: build/allure-results
+
 
   allure-report:
     name: Generate Allure Report
@@ -84,11 +84,18 @@ jobs:
       - name: Install Allure CLI
         run: |
           sudo apt-get update
-          sudo apt-get install allure
+          sudo apt-get install -y wget unzip
+          wget https://github.com/allure-framework/allure2/releases/latest/download/allure-2.27.0.zip
+          unzip allure-2.27.0.zip -d /opt/
+          sudo ln -s /opt/allure-2.27.0/bin/allure /usr/bin/allure
+          allure --version
 
       - name: Generate Allure report
         run: |
-          allure generate allure-results -o allure-report
+          mkdir -p merged-results
+          cp -r allure-results/api/* merged-results/ || true
+          cp -r allure-results/ui/* merged-results/ || true
+          allure generate merged-results -o allure-report
 
       - name: Upload Allure report
         uses: actions/upload-artifact@v4
