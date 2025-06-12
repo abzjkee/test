@@ -28,7 +28,7 @@ jobs:
 
       # 4. Сохраняем результаты Allure
       - name: Upload API Allure results
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         if: always()
         with:
           name: allure-api-results
@@ -57,7 +57,7 @@ jobs:
           ALLURE_RESULTS_PATH: build/allure-results
 
       - name: Upload UI Allure results
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         if: always()
         with:
           name: allure-ui-results
