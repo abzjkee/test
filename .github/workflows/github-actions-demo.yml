@@ -21,7 +21,7 @@ jobs:
         run: chmod +x ./gradlew
 
       - name: Run API tests with @api tag
-        run: ./gradlew clean test --tests * --info -DincludeTags=api
+        run: ./gradlew clean test --info -DincludeTags=api
         env:
           ALLURE_RESULTS_PATH: build/allure-results
 
