@@ -4,15 +4,13 @@ import api.ApiRequests;
 import io.qameta.allure.*;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import pojo.*;
 
 import static helpers.CustomAllureListener.withCustomTemplates;
 import static io.restassured.module.jsv.JsonSchemaValidator.matchesJsonSchemaInClasspath;
 
+@Tag("api")
 public class ReqresInTests extends ApiRequests {
 
     User user = new User("morpheus", "leader");
