@@ -31,7 +31,7 @@ jobs:
         if: always()
         with:
           name: allure-api-results
-          path: apitests/build/allure-results
+          path: src/tests/java/apitests/build/allure-results
 
   ui-tests:
     name: Run UI Tests by @Tag
@@ -46,6 +46,9 @@ jobs:
         with:
           java-version: '21'
           distribution: 'temurin'
+
+      - name: Make gradlew executable
+        run: chmod +x ./gradlew
 
       - name: Run UI tests with @ui tag
         working-directory: ./src/test/java/uitests
